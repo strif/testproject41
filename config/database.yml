@@ -1,0 +1,23 @@
+default: &default
+  adapter: postgresql
+  encoding: utf8
+  pool: 5
+  port: 5432
+  host: localhost
+  username: postgres
+  password: password
+  pool: 5
+
+development:
+  <<: *default
+  database: testproject_development
+
+test:
+  <<: *default
+  database: testproject_test
+
+production:
+  <<: *default
+  database: testproject_production
+  username: testproject
+  password: <%= ENV['TESTPROJECT_DATABASE_PASSWORD'] %>

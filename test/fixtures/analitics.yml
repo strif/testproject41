@@ -1,0 +1,35 @@
+# == Schema Information
+#
+# Table name: analitics
+#
+#  id           :integer          not null, primary key
+#  query        :string
+#  impressions  :integer
+#  clicks       :integer
+#  ctr          :decimal(5, 2)
+#  avg_position :decimal(5, 2)
+#  date         :date
+#  new          :boolean          default(FALSE)
+#  created_at   :datetime         not null
+#  updated_at   :datetime         not null
+#
+
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  query: MyString
+  impressions: 1
+  click: 1
+  ctr: 9.99
+  avg._position: 9.99
+  date: 2015-10-20
+  new: false
+
+two:
+  query: MyString
+  impressions: 1
+  click: 1
+  ctr: 9.99
+  avg._position: 9.99
+  date: 2015-10-20
+  new: false

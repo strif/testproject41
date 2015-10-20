@@ -1,0 +1,199 @@
+//
+// new queries
+//
+- new_queries_data = all_data.select {|data| data[:new].eql? true}
+- new_queries_selected_data = selected.select {|data| data[:new].eql? true}
+- new_queries_compared_data = compared.select {|data| data[:new].eql? true}
+
+- new_queries_impressions = new_queries_data.inject(0) {|sum, hash| sum + hash.impressions}
+- new_queries_selected_impressions = new_queries_selected_data.inject(0) {|sum, hash| sum + hash.impressions}
+- new_queries_compared_impressions = new_queries_compared_data.inject(0) {|sum, hash| sum + hash.impressions}
+
+- new_queries_clicks = new_queries_data.inject(0) {|sum, hash| sum + hash.clicks}
+- new_queries_selected_clicks = new_queries_selected_data.inject(0) {|sum, hash| sum + hash.clicks}
+- new_queries_compared_clicks = new_queries_compared_data.inject(0) {|sum, hash| sum + hash.clicks}
+
+- new_queries_ctr = new_queries_data.inject(0) {|sum, hash| sum + hash.ctr}
+- new_queries_selected_ctr = new_queries_selected_data.inject(0) {|sum, hash| sum + hash.ctr}
+- new_queries_compared_ctr = new_queries_compared_data.inject(0) {|sum, hash| sum + hash.ctr}
+
+- new_queries_avg_position = new_queries_data.inject(0) {|sum, hash| sum + hash.avg_position}
+- new_queries_selected_avg_position = new_queries_selected_data.inject(0) {|sum, hash| sum + hash.avg_position}
+- new_queries_compared_avg_position = new_queries_compared_data.inject(0) {|sum, hash| sum + hash.avg_position}
+
+//
+// existing queries
+//
+- existing_queries_data = all_data.select {|data| data[:new].eql? false}
+- existing_queries_selected_data = selected.select {|data| data[:new].eql? false}
+- existing_queries_compared_data = compared.select {|data| data[:new].eql? false}
+
+- existing_queries_impressions = existing_queries_data.inject(0) {|sum, hash| sum + hash.impressions}
+- existing_queries_selected_impressions = existing_queries_selected_data.inject(0) {|sum, hash| sum + hash.impressions}
+- existing_queries_compared_impressions = existing_queries_compared_data.inject(0) {|sum, hash| sum + hash.impressions}
+
+- existing_queries_clicks = existing_queries_data.inject(0) {|sum, hash| sum + hash.clicks}
+- existing_queries_selected_clicks = existing_queries_selected_data.inject(0) {|sum, hash| sum + hash.clicks}
+- existing_queries_compared_clicks = existing_queries_compared_data.inject(0) {|sum, hash| sum + hash.clicks}
+
+- existing_queries_ctr = existing_queries_data.inject(0) {|sum, hash| sum + hash.ctr}
+- existing_queries_selected_ctr = existing_queries_selected_data.inject(0) {|sum, hash| sum + hash.ctr}
+- existing_queries_compared_ctr = existing_queries_compared_data.inject(0) {|sum, hash| sum + hash.ctr}
+
+- existing_queries_avg_position = existing_queries_data.inject(0) {|sum, hash| sum + hash.avg_position}
+- existing_queries_selected_avg_position = existing_queries_selected_data.inject(0) {|sum, hash| sum + hash.avg_position}
+- existing_queries_compared_avg_position = existing_queries_compared_data.inject(0) {|sum, hash| sum + hash.avg_position}
+
+hr
+h1 Overview
+table.table.table-bordered
+  thead
+    tr
+      td
+      td Total Number of Keywords
+      td Visibility (Current)
+      td Traffic
+      td Average CTR
+      td Average Position
+  tbody
+    tr
+      td Overall
+      td
+        = new_queries_data.count + existing_queries_data.count
+      td
+        = "#{new_queries_impressions + existing_queries_impressions} Impression #{str_int((new_queries_selected_impressions - new_queries_compared_impressions)+(existing_queries_selected_impressions - existing_queries_compared_impressions))} (#{get_percent(((new_queries_selected_impressions - new_queries_compared_impressions)+(existing_queries_selected_impressions - existing_queries_compared_impressions)), new_queries_impressions + existing_queries_impressions)})"
+      td
+        = "#{new_queries_clicks + existing_queries_clicks} Clicks #{str_int((new_queries_selected_clicks - new_queries_compared_clicks)+(existing_queries_selected_clicks - existing_queries_compared_clicks))} (#{get_percent(((new_queries_selected_clicks - new_queries_compared_clicks)+(existing_queries_selected_clicks - existing_queries_compared_clicks)), new_queries_clicks + existing_queries_clicks)})"
+      td
+        = "#{new_queries_ctr + existing_queries_ctr} #{str_int((new_queries_selected_ctr - new_queries_compared_ctr)+(existing_queries_selected_ctr - existing_queries_compared_ctr))} (#{get_percent(((new_queries_selected_ctr - new_queries_compared_ctr)+(existing_queries_selected_ctr - existing_queries_compared_ctr)), new_queries_ctr + existing_queries_ctr)})"
+      td
+        = "#{new_queries_avg_position + existing_queries_avg_position} #{str_int((new_queries_selected_avg_position - new_queries_compared_avg_position)+(existing_queries_selected_avg_position - existing_queries_compared_avg_position))} (#{get_percent(((new_queries_selected_avg_position - new_queries_compared_avg_position)+(existing_queries_selected_avg_position - existing_queries_compared_avg_position)), new_queries_avg_position + existing_queries_avg_position)})"
+
+    tr
+      td New Queries
+      td
+        = new_queries_data.count
+      td
+        = "#{new_queries_impressions} Impression #{str_int(new_queries_selected_impressions - new_queries_compared_impressions)} (#{get_percent((new_queries_selected_impressions - new_queries_compared_impressions), new_queries_impressions)})"
+      td
+        = "#{new_queries_clicks} Clicks #{str_int(new_queries_selected_clicks - new_queries_compared_clicks)} (#{get_percent((new_queries_selected_clicks - new_queries_compared_clicks), new_queries_clicks)})"
+      td
+        = "#{new_queries_ctr} #{str_int(new_queries_selected_ctr - new_queries_compared_ctr)} (#{get_percent((new_queries_selected_ctr - new_queries_compared_ctr), new_queries_ctr)})"
+      td
+        = "#{new_queries_avg_position} #{str_int(new_queries_selected_avg_position - new_queries_compared_avg_position)} (#{get_percent((new_queries_selected_avg_position - new_queries_compared_avg_position), new_queries_avg_position)})"
+
+    tr
+      td Existing Queries
+      td
+        = existing_queries_data.count
+      td
+        = "#{existing_queries_impressions} Impression #{str_int(existing_queries_selected_impressions - existing_queries_compared_impressions)} (#{get_percent((existing_queries_selected_impressions - existing_queries_compared_impressions), existing_queries_impressions)})"
+      td
+        = "#{existing_queries_clicks} Clicks #{str_int(existing_queries_selected_clicks - existing_queries_compared_clicks)} (#{get_percent((existing_queries_selected_clicks - existing_queries_compared_clicks), existing_queries_clicks)})"
+      td
+        = "#{existing_queries_ctr} #{str_int(existing_queries_selected_ctr - existing_queries_compared_ctr)} (#{get_percent((existing_queries_selected_ctr - existing_queries_compared_ctr), existing_queries_ctr)})"
+      td
+        = "#{existing_queries_avg_position} #{str_int(existing_queries_selected_avg_position - existing_queries_compared_avg_position)} (#{get_percent((existing_queries_selected_avg_position - existing_queries_compared_avg_position), existing_queries_avg_position)})"
+
+hr
+- k_selected = selected.map{|k| k.attributes.merge(type: 'selected')}
+- k_compared = compared.map{|k| k.attributes.merge(type: 'compared')}
+
+- keywords_init = (k_selected + k_compared).group_by { |data| data['query'] }
+- keywords = process_keywords(keywords_init)
+
+h1 Top Keywords (top 10 based on clicks)
+table.table.table-bordered
+  thead
+    tr
+      td
+      td Visibility (Current)
+      td Traffic
+      td Average CTR
+      td Average Position
+  tbody
+    - keywords.sort_by { |k| k[:all_clicks] }.reverse.take(10).each do |keyword|
+      tr
+        td = keyword[:query]
+        td = "#{keyword[:s_impressions]} Impressions #{str_int(keyword[:s_impressions] - keyword[:c_impressions])} (#{get_percent((keyword[:s_impressions] - keyword[:c_impressions]), keyword[:s_impressions])})"
+        td = "#{keyword[:s_clicks]} Clicks #{str_int(keyword[:s_clicks] - keyword[:c_clicks])} (#{get_percent((keyword[:s_clicks] - keyword[:c_clicks]), keyword[:s_clicks])})"
+        td = "#{keyword[:s_ctr]} #{str_int(keyword[:s_ctr] - keyword[:c_ctr])} (#{get_percent((keyword[:s_ctr] - keyword[:c_ctr]), keyword[:s_ctr])})"
+        td = "#{keyword[:s_avg_position]} #{str_int(keyword[:s_avg_position] - keyword[:c_avg_position])} (#{get_percent((keyword[:s_avg_position] - keyword[:c_avg_position]), keyword[:s_avg_position])})"
+
+h1 New Keywords (top 10 based on impressions)
+table.table.table-bordered
+  thead
+    tr
+      td
+      td Visibility (Current)
+      td Traffic
+      td Average CTR
+      td Average Position
+  tbody
+    - keywords.sort_by { |k| k[:all_impressions] }.reverse.take(10).each do |keyword|
+      tr
+        td = keyword[:query]
+        td = "#{keyword[:s_impressions]} Impressions #{str_int(keyword[:s_impressions] - keyword[:c_impressions])} (#{get_percent((keyword[:s_impressions] - keyword[:c_impressions]), keyword[:s_impressions])})"
+        td = "#{keyword[:s_clicks]} Clicks #{str_int(keyword[:s_clicks] - keyword[:c_clicks])} (#{get_percent((keyword[:s_clicks] - keyword[:c_clicks]), keyword[:s_clicks])})"
+        td = "#{keyword[:s_ctr]} #{str_int(keyword[:s_ctr] - keyword[:c_ctr])} (#{get_percent((keyword[:s_ctr] - keyword[:c_ctr]), keyword[:s_ctr])})"
+        td = "#{keyword[:s_avg_position]} #{str_int(keyword[:s_avg_position] - keyword[:c_avg_position])} (#{get_percent((keyword[:s_avg_position] - keyword[:c_avg_position]), keyword[:s_avg_position])})"
+
+h1 Keywords Dissapeared (top 10 based on impressions from past period)
+table.table.table-bordered
+  thead
+    tr
+      td
+      td Visibility (Current)
+      td Traffic
+      td Average CTR
+      td Average Position
+  tbody
+    - keywords.sort_by { |k| k[:s_impressions] }.reverse.take(10).each do |keyword|
+      tr
+        td = keyword[:query]
+        td = "#{keyword[:s_impressions]} Impressions #{str_int(keyword[:s_impressions] - keyword[:c_impressions])} (#{get_percent((keyword[:s_impressions] - keyword[:c_impressions]), keyword[:s_impressions])})"
+        td = "#{keyword[:s_clicks]} Clicks #{str_int(keyword[:s_clicks] - keyword[:c_clicks])} (#{get_percent((keyword[:s_clicks] - keyword[:c_clicks]), keyword[:s_clicks])})"
+        td = "#{keyword[:s_ctr]} #{str_int(keyword[:s_ctr] - keyword[:c_ctr])} (#{get_percent((keyword[:s_ctr] - keyword[:c_ctr]), keyword[:s_ctr])})"
+        td = "#{keyword[:s_avg_position]} #{str_int(keyword[:s_avg_position] - keyword[:c_avg_position])} (#{get_percent((keyword[:s_avg_position] - keyword[:c_avg_position]), keyword[:s_avg_position])})"
+
+h1 Improved Rangkings
+table.table.table-bordered
+  thead
+    tr
+      td
+      td Visibility (Current)
+      td Traffic
+      td Average CTR
+      td Average Position
+  tbody
+    - keywords.select {|a| a[:all_impressions] >= 100 }.sort_by { |k| k[:avg_position] }.reverse.take(10).each do |keyword|
+      tr
+        td = keyword[:query]
+        td = "#{keyword[:s_impressions]} Impressions #{str_int(keyword[:s_impressions] - keyword[:c_impressions])} (#{get_percent((keyword[:s_impressions] - keyword[:c_impressions]), keyword[:s_impressions])})"
+        td = "#{keyword[:s_clicks]} Clicks #{str_int(keyword[:s_clicks] - keyword[:c_clicks])} (#{get_percent((keyword[:s_clicks] - keyword[:c_clicks]), keyword[:s_clicks])})"
+        td = "#{keyword[:s_ctr]} #{str_int(keyword[:s_ctr] - keyword[:c_ctr])} (#{get_percent((keyword[:s_ctr] - keyword[:c_ctr]), keyword[:s_ctr])})"
+        td = "#{keyword[:s_avg_position]} #{str_int(keyword[:s_avg_position] - keyword[:c_avg_position])} (#{get_percent((keyword[:s_avg_position] - keyword[:c_avg_position]), keyword[:s_avg_position])})"
+
+h1 Lost Rangkings
+table.table.table-bordered
+  thead
+    tr
+      td
+      td Visibility (Current)
+      td Traffic
+      td Average CTR
+      td Average Position
+  tbody
+    - keywords.select {|a| a[:all_impressions] <= 100 }.sort_by { |k| k[:avg_position] }.reverse.take(10).each do |keyword|
+      tr
+        td = keyword[:query]
+        td = "#{keyword[:s_impressions]} Impressions #{str_int(keyword[:s_impressions] - keyword[:c_impressions])} (#{get_percent((keyword[:s_impressions] - keyword[:c_impressions]), keyword[:s_impressions])})"
+        td = "#{keyword[:s_clicks]} Clicks #{str_int(keyword[:s_clicks] - keyword[:c_clicks])} (#{get_percent((keyword[:s_clicks] - keyword[:c_clicks]), keyword[:s_clicks])})"
+        td = "#{keyword[:s_ctr]} #{str_int(keyword[:s_ctr] - keyword[:c_ctr])} (#{get_percent((keyword[:s_ctr] - keyword[:c_ctr]), keyword[:s_ctr])})"
+        td = "#{keyword[:s_avg_position]} #{str_int(keyword[:s_avg_position] - keyword[:c_avg_position])} (#{get_percent((keyword[:s_avg_position] - keyword[:c_avg_position]), keyword[:s_avg_position])})"
+
+/
+/ chart section
+/
+/ - keywords_init = (k_selected + k_compared).group_by { |data| data['date'] }
+/ - keywords = process_keywords_date(keywords_init)

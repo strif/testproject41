@@ -1,0 +1,12 @@
+h1 Upload Data
+
+= simple_form_for(@analitic) do |f|
+  = f.error_notification
+
+  .form-inputs
+    = f.input :file, as: :file
+
+  .form-actions
+    = f.button :submit
+    | &nbsp;
+    = link_to "Back", analitics_path, class: "btn btn-default"

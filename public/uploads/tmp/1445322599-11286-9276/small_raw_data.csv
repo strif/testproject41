@@ -1,0 +1,6 @@
+Query,Impressions,Clicks,CTR,Avg_Position,Date,New
+bulk http status checker,3,1,0.3333,4.3,20/03/2015,true
+http status check,7,0,0.0,11.0,20/03/2015,true
+bulk redirect checker,4,0,0.0,9.3,20/03/2015,true
+http status checker,4,0,0.0,9.8,20/03/2015,true
+bulk url checker,1,0,0.0,38.0,20/03/2015,true

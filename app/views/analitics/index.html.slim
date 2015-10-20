@@ -1,0 +1,15 @@
+h1 Filter Data
+= link_to "Upload Data", new_analitic_path
+
+h1 Date Picker
+= simple_form_for :analitic, url: filter_analitics_path do |f|
+  p Selected Date :
+  = f.input :start_date
+  = f.input :end_date
+  p Compared Date :
+  = f.input :compared_to_start_date
+  = f.input :compared_to_end_date
+  = f.button :submit, "Compare"
+
+- if action_name.eql? "filter"
+  = render partial: "filter_result", locals: {selected: @selected, compared: @compared, all_data: @all_data}
