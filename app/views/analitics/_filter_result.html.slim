@@ -1,163 +1,51 @@
 //
-// new queries
+// new queries & existing queries processes
 //
 - new_queries = process_new_query_data(all_data, selected, compared, true)
-
-//
-// existing queries
-//
 - existing_queries = process_new_query_data(all_data, selected, compared, false)
 
 hr
-h4 Overview
-table.table.table-bordered
-  thead
-    tr
-      td
-      td Total Number of Keywords
-      td Visibility (Current)
-      td Traffic
-      td Average CTR
-      td Average Position
-  tbody
-    tr
-      td Overall
-      td
-        = new_queries[:data].count + existing_queries[:data].count
-      td
-        = total_calculation_process_for("impressions", new_queries, existing_queries)
-      td
-        = total_calculation_process_for("clicks", new_queries, existing_queries)
-      td
-        = total_calculation_process_for("ctr", new_queries, existing_queries)
-      td
-        = total_calculation_process_for("avg_position", new_queries, existing_queries)
+h3 Overview
+= render partial: "analitics/table/overview", locals: {new_queries: new_queries, existing_queries: existing_queries}
 
-    tr
-      td New Queries
-      td
-        = new_queries[:data].count
-      td
-        = calculation_process_for("impressions", new_queries)
-      td
-        = calculation_process_for("clicks", new_queries)
-      td
-        = calculation_process_for("ctr", new_queries)
-      td
-        = calculation_process_for("avg_position", new_queries)
-
-    tr
-      td Existing Queries
-      td
-        = existing_queries[:data].count
-      td
-        = calculation_process_for("impressions", existing_queries)
-      td
-        = calculation_process_for("clicks", existing_queries)
-      td
-        = calculation_process_for("ctr", existing_queries)
-      td
-        = calculation_process_for("avg_position", existing_queries)
+//
+// queries process for keywords rankings
+//
+- queries_selected = selected.map{|query| query.attributes.merge(type: 'selected')}
+- queries_compared = compared.map{|query| query.attributes.merge(type: 'compared')}
+- queries_grouped  = (queries_selected + queries_compared).group_by { |data| data['query'] }
+- queries          = process_queries(queries_grouped)
 
 hr
-- k_selected = selected.map{|k| k.attributes.merge(type: 'selected')}
-- k_compared = compared.map{|k| k.attributes.merge(type: 'compared')}
+h3 Top Keywords (top 10 based on clicks)
+- top_keywords = queries.sort_by { |q| q[:all_clicks] }.reverse.take(10)
+= render partial: "analitics/table/list", locals: {analitics: top_keywords}
 
-- keywords_init = (k_selected + k_compared).group_by { |data| data['query'] }
-- keywords = process_keywords(keywords_init)
+.row
+  .col-md-6
+    hr
+    h3 New Keywords (top 10 based on impressions)
+    - new_keywords = queries.sort_by { |q| q[:all_impressions] }.reverse.take(10)
+    = render partial: "analitics/table/list", locals: {analitics: new_keywords}
 
-h4 Top Keywords (top 10 based on clicks)
-table.table.table-bordered
-  thead
-    tr
-      td
-      td Visibility (Current)
-      td Traffic
-      td Average CTR
-      td Average Position
-  tbody
-    - keywords.sort_by { |k| k[:all_clicks] }.reverse.take(10).each do |keyword|
-      tr
-        td = keyword[:query]
-        td = "#{keyword[:s_impressions]} Impressions #{str_int(keyword[:s_impressions] - keyword[:c_impressions])} (#{get_percent((keyword[:s_impressions] - keyword[:c_impressions]), keyword[:s_impressions])})"
-        td = "#{keyword[:s_clicks]} Clicks #{str_int(keyword[:s_clicks] - keyword[:c_clicks])} (#{get_percent((keyword[:s_clicks] - keyword[:c_clicks]), keyword[:s_clicks])})"
-        td = "#{keyword[:s_ctr]} #{str_int(keyword[:s_ctr] - keyword[:c_ctr])} (#{get_percent((keyword[:s_ctr] - keyword[:c_ctr]), keyword[:s_ctr])})"
-        td = "#{keyword[:s_avg_position]} #{str_int(keyword[:s_avg_position] - keyword[:c_avg_position])} (#{get_percent((keyword[:s_avg_position] - keyword[:c_avg_position]), keyword[:s_avg_position])})"
+  .col-md-6
+    hr
+    h3 Keywords Dissapeared (top 10 based on impressions from past period)
+    - keywords_dissapeared = queries.sort_by { |q| q[:s_impressions] }.reverse.take(10)
+    = render partial: "analitics/table/list", locals: {analitics: keywords_dissapeared}
 
-h4 New Keywords (top 10 based on impressions)
-table.table.table-bordered
-  thead
-    tr
-      td
-      td Visibility (Current)
-      td Traffic
-      td Average CTR
-      td Average Position
-  tbody
-    - keywords.sort_by { |k| k[:all_impressions] }.reverse.take(10).each do |keyword|
-      tr
-        td = keyword[:query]
-        td = "#{keyword[:s_impressions]} Impressions #{str_int(keyword[:s_impressions] - keyword[:c_impressions])} (#{get_percent((keyword[:s_impressions] - keyword[:c_impressions]), keyword[:s_impressions])})"
-        td = "#{keyword[:s_clicks]} Clicks #{str_int(keyword[:s_clicks] - keyword[:c_clicks])} (#{get_percent((keyword[:s_clicks] - keyword[:c_clicks]), keyword[:s_clicks])})"
-        td = "#{keyword[:s_ctr]} #{str_int(keyword[:s_ctr] - keyword[:c_ctr])} (#{get_percent((keyword[:s_ctr] - keyword[:c_ctr]), keyword[:s_ctr])})"
-        td = "#{keyword[:s_avg_position]} #{str_int(keyword[:s_avg_position] - keyword[:c_avg_position])} (#{get_percent((keyword[:s_avg_position] - keyword[:c_avg_position]), keyword[:s_avg_position])})"
+  .col-md-6
+    hr
+    h3 Improved Rangkings
+    - improved_rangkings = queries.select {|q| q[:all_impressions] >= 100 }.sort_by { |r| r[:avg_position] }.reverse.take(10)
+    = render partial: "analitics/table/list", locals: {analitics: improved_rangkings}
 
-h4 Keywords Dissapeared (top 10 based on impressions from past period)
-table.table.table-bordered
-  thead
-    tr
-      td
-      td Visibility (Current)
-      td Traffic
-      td Average CTR
-      td Average Position
-  tbody
-    - keywords.sort_by { |k| k[:s_impressions] }.reverse.take(10).each do |keyword|
-      tr
-        td = keyword[:query]
-        td = "#{keyword[:s_impressions]} Impressions #{str_int(keyword[:s_impressions] - keyword[:c_impressions])} (#{get_percent((keyword[:s_impressions] - keyword[:c_impressions]), keyword[:s_impressions])})"
-        td = "#{keyword[:s_clicks]} Clicks #{str_int(keyword[:s_clicks] - keyword[:c_clicks])} (#{get_percent((keyword[:s_clicks] - keyword[:c_clicks]), keyword[:s_clicks])})"
-        td = "#{keyword[:s_ctr]} #{str_int(keyword[:s_ctr] - keyword[:c_ctr])} (#{get_percent((keyword[:s_ctr] - keyword[:c_ctr]), keyword[:s_ctr])})"
-        td = "#{keyword[:s_avg_position]} #{str_int(keyword[:s_avg_position] - keyword[:c_avg_position])} (#{get_percent((keyword[:s_avg_position] - keyword[:c_avg_position]), keyword[:s_avg_position])})"
+  .col-md-6
+    hr
+    h3 Lost Rangkings
+    - improved_rangkings = queries.select {|q| q[:all_impressions] <= 100 }.sort_by { |r| r[:avg_position] }.reverse.take(10)
+    = render partial: "analitics/table/list", locals: {analitics: improved_rangkings}
 
-h4 Improved Rangkings
-table.table.table-bordered
-  thead
-    tr
-      td
-      td Visibility (Current)
-      td Traffic
-      td Average CTR
-      td Average Position
-  tbody
-    - keywords.select {|a| a[:all_impressions] >= 100 }.sort_by { |k| k[:avg_position] }.reverse.take(10).each do |keyword|
-      tr
-        td = keyword[:query]
-        td = "#{keyword[:s_impressions]} Impressions #{str_int(keyword[:s_impressions] - keyword[:c_impressions])} (#{get_percent((keyword[:s_impressions] - keyword[:c_impressions]), keyword[:s_impressions])})"
-        td = "#{keyword[:s_clicks]} Clicks #{str_int(keyword[:s_clicks] - keyword[:c_clicks])} (#{get_percent((keyword[:s_clicks] - keyword[:c_clicks]), keyword[:s_clicks])})"
-        td = "#{keyword[:s_ctr]} #{str_int(keyword[:s_ctr] - keyword[:c_ctr])} (#{get_percent((keyword[:s_ctr] - keyword[:c_ctr]), keyword[:s_ctr])})"
-        td = "#{keyword[:s_avg_position]} #{str_int(keyword[:s_avg_position] - keyword[:c_avg_position])} (#{get_percent((keyword[:s_avg_position] - keyword[:c_avg_position]), keyword[:s_avg_position])})"
-
-h4 Lost Rangkings
-table.table.table-bordered
-  thead
-    tr
-      td
-      td Visibility (Current)
-      td Traffic
-      td Average CTR
-      td Average Position
-  tbody
-    - keywords.select {|a| a[:all_impressions] <= 100 }.sort_by { |k| k[:avg_position] }.reverse.take(10).each do |keyword|
-      tr
-        td = keyword[:query]
-        td = "#{keyword[:s_impressions]} Impressions #{str_int(keyword[:s_impressions] - keyword[:c_impressions])} (#{get_percent((keyword[:s_impressions] - keyword[:c_impressions]), keyword[:s_impressions])})"
-        td = "#{keyword[:s_clicks]} Clicks #{str_int(keyword[:s_clicks] - keyword[:c_clicks])} (#{get_percent((keyword[:s_clicks] - keyword[:c_clicks]), keyword[:s_clicks])})"
-        td = "#{keyword[:s_ctr]} #{str_int(keyword[:s_ctr] - keyword[:c_ctr])} (#{get_percent((keyword[:s_ctr] - keyword[:c_ctr]), keyword[:s_ctr])})"
-        td = "#{keyword[:s_avg_position]} #{str_int(keyword[:s_avg_position] - keyword[:c_avg_position])} (#{get_percent((keyword[:s_avg_position] - keyword[:c_avg_position]), keyword[:s_avg_position])})"
-
-hr
-hr
 
 .row
   .col-md-6
@@ -192,21 +80,12 @@ hr
   .col-md-6
     h4 CTR (only displaying queries with more than 100 impressions )
 
-    table.table.table-bordered
-      thead
-        tr
-          td Position Group
-          td CTR
-          td CTR from previous period
-          td Comparison
+    - selected_ctr = queries.select {|q| q[:selected_impressions] > 100 }.sort_by { |r| r[:ctr] }
+    - compared_ctr = queries.select {|q| q[:compared_impressions] > 100 }.sort_by { |r| r[:ctr] }
+    - combined_ctr = selected_ctr + compared_ctr
 
-      tbody
-        - ctr_group_calculation(selected.to_a, compared.to_a).each do |key, value|
-          tr
-            td = key
-            td.ctr-view-helper.color = value[1] || 0
-            td.ctr-view-helper.color = value[2] || 0
-            td.ctr-view-helper = (value[2] || 0) - (value[1] || 0)
+
+    = render partial: "analitics/table/list_ctr", locals: {selected_analitics: selected_ctr, compared_analitics: compared_ctr, combined_analitics: combined_ctr}
 
     javascript:
       $('.ctr-view-helper').each(function(){

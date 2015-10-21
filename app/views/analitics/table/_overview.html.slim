@@ -1,0 +1,33 @@
+table.table.table-bordered
+  thead
+    tr
+      td
+      td Total Number of Keywords
+      td Visibility (Current)
+      td Traffic
+      td Average CTR
+      td Average Position
+  tbody
+    tr
+      td Overall
+      td = new_queries[:data].count + existing_queries[:data].count
+      td = total_calculation_process_for("impressions", new_queries, existing_queries)
+      td = total_calculation_process_for("clicks", new_queries, existing_queries)
+      td = total_calculation_process_for("ctr", new_queries, existing_queries)
+      td = total_calculation_process_for("avg_position", new_queries, existing_queries)
+
+    tr
+      td New Queries
+      td = new_queries[:data].count
+      td = calculation_process_for("impressions", new_queries)
+      td = calculation_process_for("clicks", new_queries)
+      td = calculation_process_for("ctr", new_queries)
+      td = calculation_process_for("avg_position", new_queries)
+
+    tr
+      td Existing Queries
+      td = existing_queries[:data].count
+      td = calculation_process_for("impressions", existing_queries)
+      td = calculation_process_for("clicks", existing_queries)
+      td = calculation_process_for("ctr", existing_queries)
+      td = calculation_process_for("avg_position", existing_queries)

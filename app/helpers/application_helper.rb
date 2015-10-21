@@ -14,6 +14,7 @@ module ApplicationHelper
   # return string percent
   #
   def get_percent(add, val)
+    val = 1 if val.eql? 0
     return "#{str_int("#{(add.to_f/val.to_f)*100 || 0}".to_i)}%"
   end
 
@@ -57,43 +58,4 @@ module ApplicationHelper
     }
   end
 
-
-  def ctr_group_calculation(data1, data2)
-    ctr_group_position = {
-      1 => {},
-      2 => {},
-      3 => {},
-      4 => {},
-      5 => {},
-      6 => {},
-      7 => {},
-      8 => {},
-      9 => {},
-      10 => {},
-    }
-
-    data1 = data1.reject{|a| a.impressions.to_i < 100 }.reject{|a| a.avg_position.to_i > 10 }.group_by { |data| data.avg_position.to_i }
-    data1 = data1.each do |position, data|
-      {
-        :position => position,
-        :ctr_1 => data.map {|s| s.ctr.to_i}.reduce(0, :+)
-      }
-      ctr_group_position[position] = ctr_group_position[position].merge({1 => data.map {|s| s.ctr.to_i}.reduce(0, :+)})
-    end
-
-    data2 = data2.reject{|a| a.impressions.to_i < 100 }.reject{|a| a.avg_position.to_i > 10 }.group_by { |data| data.avg_position.to_i }
-    data2 = data2.each do |position, data|
-      {
-        :position => position,
-        :ctr_2 => data.map {|s| s.ctr.to_i}.reduce(0, :+)
-      }
-      ctr_group_position[position] = ctr_group_position[position].merge({2 => data.map {|s| s.ctr.to_i}.reduce(0, :+)})
-    end
-    
-    ctr_group_position
-  end
-
-  def ctr_group_percent_calculation()
-
-  end
 end

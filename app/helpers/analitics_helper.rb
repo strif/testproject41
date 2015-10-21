@@ -29,29 +29,6 @@ module AnaliticsHelper
   end
 
   #
-  # process keywords
-  #
-  def process_keywords(keywords_init)
-    keywords_init.map do |query, data|
-      {
-        :query => query,
-        :all_impressions => data.map {|s| s['impressions']}.reduce(0, :+),
-        :s_impressions => data.select {|a| a[:type].eql? 'selected' }.map {|s| s['impressions']}.reduce(0, :+),
-        :c_impressions => data.select {|a| a[:type].eql? 'compared' }.map {|s| s['impressions']}.reduce(0, :+),
-        :all_clicks => data.map {|s| s['clicks']}.reduce(0, :+),
-        :s_clicks => data.select {|a| a[:type].eql? 'selected' }.map {|s| s['clicks']}.reduce(0, :+),
-        :c_clicks => data.select {|a| a[:type].eql? 'compared' }.map {|s| s['clicks']}.reduce(0, :+),
-        :all_avg_position => data.map {|s| s['avg_position']}.reduce(0, :+).to_i,
-        :s_avg_position => data.select {|a| a[:type].eql? 'selected' }.map {|s| s['avg_position']}.reduce(0, :+).to_i,
-        :c_avg_position => data.select {|a| a[:type].eql? 'compared' }.map {|s| s['avg_position']}.reduce(0, :+).to_i,
-        :s_ctr => data.select {|a| a[:type].eql? 'selected' }.map {|s| s['ctr']}.reduce(0, :+).to_i,
-        :c_ctr => data.select {|a| a[:type].eql? 'compared' }.map {|s| s['ctr']}.reduce(0, :+).to_i,
-        type: data.first[:type]
-      }
-    end
-  end
-
-  #
   # process keywords for date
   #
   def process_keywords_date(keywords_init)
@@ -85,5 +62,41 @@ module AnaliticsHelper
     text = object.capitalize if ["impressions", "clicks"].include? object
 
     return "#{total_impression} #{text} #{total_difference} (#{total_difference_on_percent})"
+  end
+
+  #
+  # get total calculation and its differences - also its difference percentation
+  #
+  def calculation_process_keyword_for(object, queries)
+    total_impression = queries["selected_#{object}".to_sym]
+    total_difference = str_int(queries["selected_#{object}".to_sym] - queries["compared_#{object}".to_sym])
+    total_difference_on_percent = get_percent(total_difference, total_impression)
+
+    text = object.capitalize if ["impressions", "clicks"].include? object
+
+    return "#{total_impression} #{text} #{total_difference} (#{total_difference_on_percent})"
+  end
+
+  #
+  # process queries
+  #
+  def process_queries(queries_grouped)
+    queries_grouped.map do |query, data|
+      {
+        :query => query,
+        :all_impressions => data.map {|s| s['impressions']}.reduce(0, :+),
+        :selected_impressions => data.select {|a| a[:type].eql? 'selected' }.map {|s| s['impressions']}.reduce(0, :+),
+        :compared_impressions => data.select {|a| a[:type].eql? 'compared' }.map {|s| s['impressions']}.reduce(0, :+),
+        :all_clicks => data.map {|s| s['clicks']}.reduce(0, :+),
+        :selected_clicks => data.select {|a| a[:type].eql? 'selected' }.map {|s| s['clicks']}.reduce(0, :+),
+        :compared_clicks => data.select {|a| a[:type].eql? 'compared' }.map {|s| s['clicks']}.reduce(0, :+),
+        :all_avg_position => data.map {|s| s['avg_position']}.reduce(0, :+).to_i,
+        :selected_avg_position => data.select {|a| a[:type].eql? 'selected' }.map {|s| s['avg_position']}.reduce(0, :+).to_i,
+        :compared_avg_position => data.select {|a| a[:type].eql? 'compared' }.map {|s| s['avg_position']}.reduce(0, :+).to_i,
+        :selected_ctr => data.select {|a| a[:type].eql? 'selected' }.map {|s| s['ctr']}.reduce(0, :+).to_i,
+        :compared_ctr => data.select {|a| a[:type].eql? 'compared' }.map {|s| s['ctr']}.reduce(0, :+).to_i,
+        type: data.first[:type]
+      }
+    end
   end
 end
