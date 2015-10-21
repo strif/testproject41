@@ -1,48 +1,12 @@
 //
 // new queries
 //
-- new_queries_data = all_data.select {|data| data[:new].eql? true}
-- new_queries_selected_data = selected.select {|data| data[:new].eql? true}
-- new_queries_compared_data = compared.select {|data| data[:new].eql? true}
-
-- new_queries_impressions = new_queries_data.inject(0) {|sum, hash| sum + hash.impressions}
-- new_queries_selected_impressions = new_queries_selected_data.inject(0) {|sum, hash| sum + hash.impressions}
-- new_queries_compared_impressions = new_queries_compared_data.inject(0) {|sum, hash| sum + hash.impressions}
-
-- new_queries_clicks = new_queries_data.inject(0) {|sum, hash| sum + hash.clicks}
-- new_queries_selected_clicks = new_queries_selected_data.inject(0) {|sum, hash| sum + hash.clicks}
-- new_queries_compared_clicks = new_queries_compared_data.inject(0) {|sum, hash| sum + hash.clicks}
-
-- new_queries_ctr = new_queries_data.inject(0) {|sum, hash| sum + hash.ctr}
-- new_queries_selected_ctr = new_queries_selected_data.inject(0) {|sum, hash| sum + hash.ctr}
-- new_queries_compared_ctr = new_queries_compared_data.inject(0) {|sum, hash| sum + hash.ctr}
-
-- new_queries_avg_position = new_queries_data.inject(0) {|sum, hash| sum + hash.avg_position}
-- new_queries_selected_avg_position = new_queries_selected_data.inject(0) {|sum, hash| sum + hash.avg_position}
-- new_queries_compared_avg_position = new_queries_compared_data.inject(0) {|sum, hash| sum + hash.avg_position}
+- new_queries = process_new_query_data(all_data, selected, compared, true)
 
 //
 // existing queries
 //
-- existing_queries_data = all_data.select {|data| data[:new].eql? false}
-- existing_queries_selected_data = selected.select {|data| data[:new].eql? false}
-- existing_queries_compared_data = compared.select {|data| data[:new].eql? false}
-
-- existing_queries_impressions = existing_queries_data.inject(0) {|sum, hash| sum + hash.impressions}
-- existing_queries_selected_impressions = existing_queries_selected_data.inject(0) {|sum, hash| sum + hash.impressions}
-- existing_queries_compared_impressions = existing_queries_compared_data.inject(0) {|sum, hash| sum + hash.impressions}
-
-- existing_queries_clicks = existing_queries_data.inject(0) {|sum, hash| sum + hash.clicks}
-- existing_queries_selected_clicks = existing_queries_selected_data.inject(0) {|sum, hash| sum + hash.clicks}
-- existing_queries_compared_clicks = existing_queries_compared_data.inject(0) {|sum, hash| sum + hash.clicks}
-
-- existing_queries_ctr = existing_queries_data.inject(0) {|sum, hash| sum + hash.ctr}
-- existing_queries_selected_ctr = existing_queries_selected_data.inject(0) {|sum, hash| sum + hash.ctr}
-- existing_queries_compared_ctr = existing_queries_compared_data.inject(0) {|sum, hash| sum + hash.ctr}
-
-- existing_queries_avg_position = existing_queries_data.inject(0) {|sum, hash| sum + hash.avg_position}
-- existing_queries_selected_avg_position = existing_queries_selected_data.inject(0) {|sum, hash| sum + hash.avg_position}
-- existing_queries_compared_avg_position = existing_queries_compared_data.inject(0) {|sum, hash| sum + hash.avg_position}
+- existing_queries = process_new_query_data(all_data, selected, compared, false)
 
 hr
 h1 Overview
@@ -59,41 +23,41 @@ table.table.table-bordered
     tr
       td Overall
       td
-        = new_queries_data.count + existing_queries_data.count
+        = new_queries[:data].count + existing_queries[:data].count
       td
-        = "#{new_queries_impressions + existing_queries_impressions} Impression #{str_int((new_queries_selected_impressions - new_queries_compared_impressions)+(existing_queries_selected_impressions - existing_queries_compared_impressions))} (#{get_percent(((new_queries_selected_impressions - new_queries_compared_impressions)+(existing_queries_selected_impressions - existing_queries_compared_impressions)), new_queries_impressions + existing_queries_impressions)})"
+        = total_calculation_process_for("impressions", new_queries, existing_queries)
       td
-        = "#{new_queries_clicks + existing_queries_clicks} Clicks #{str_int((new_queries_selected_clicks - new_queries_compared_clicks)+(existing_queries_selected_clicks - existing_queries_compared_clicks))} (#{get_percent(((new_queries_selected_clicks - new_queries_compared_clicks)+(existing_queries_selected_clicks - existing_queries_compared_clicks)), new_queries_clicks + existing_queries_clicks)})"
+        = total_calculation_process_for("clicks", new_queries, existing_queries)
       td
-        = "#{new_queries_ctr + existing_queries_ctr} #{str_int((new_queries_selected_ctr - new_queries_compared_ctr)+(existing_queries_selected_ctr - existing_queries_compared_ctr))} (#{get_percent(((new_queries_selected_ctr - new_queries_compared_ctr)+(existing_queries_selected_ctr - existing_queries_compared_ctr)), new_queries_ctr + existing_queries_ctr)})"
+        = total_calculation_process_for("ctr", new_queries, existing_queries)
       td
-        = "#{new_queries_avg_position + existing_queries_avg_position} #{str_int((new_queries_selected_avg_position - new_queries_compared_avg_position)+(existing_queries_selected_avg_position - existing_queries_compared_avg_position))} (#{get_percent(((new_queries_selected_avg_position - new_queries_compared_avg_position)+(existing_queries_selected_avg_position - existing_queries_compared_avg_position)), new_queries_avg_position + existing_queries_avg_position)})"
+        = total_calculation_process_for("avg_position", new_queries, existing_queries)
 
     tr
       td New Queries
       td
-        = new_queries_data.count
+        = new_queries[:data].count
       td
-        = "#{new_queries_impressions} Impression #{str_int(new_queries_selected_impressions - new_queries_compared_impressions)} (#{get_percent((new_queries_selected_impressions - new_queries_compared_impressions), new_queries_impressions)})"
+        = calculation_process_for("impressions", new_queries)
       td
-        = "#{new_queries_clicks} Clicks #{str_int(new_queries_selected_clicks - new_queries_compared_clicks)} (#{get_percent((new_queries_selected_clicks - new_queries_compared_clicks), new_queries_clicks)})"
+        = calculation_process_for("clicks", new_queries)
       td
-        = "#{new_queries_ctr} #{str_int(new_queries_selected_ctr - new_queries_compared_ctr)} (#{get_percent((new_queries_selected_ctr - new_queries_compared_ctr), new_queries_ctr)})"
+        = calculation_process_for("ctr", new_queries)
       td
-        = "#{new_queries_avg_position} #{str_int(new_queries_selected_avg_position - new_queries_compared_avg_position)} (#{get_percent((new_queries_selected_avg_position - new_queries_compared_avg_position), new_queries_avg_position)})"
+        = calculation_process_for("avg_position", new_queries)
 
     tr
       td Existing Queries
       td
-        = existing_queries_data.count
+        = existing_queries[:data].count
       td
-        = "#{existing_queries_impressions} Impression #{str_int(existing_queries_selected_impressions - existing_queries_compared_impressions)} (#{get_percent((existing_queries_selected_impressions - existing_queries_compared_impressions), existing_queries_impressions)})"
+        = calculation_process_for("impressions", existing_queries)
       td
-        = "#{existing_queries_clicks} Clicks #{str_int(existing_queries_selected_clicks - existing_queries_compared_clicks)} (#{get_percent((existing_queries_selected_clicks - existing_queries_compared_clicks), existing_queries_clicks)})"
+        = calculation_process_for("clicks", existing_queries)
       td
-        = "#{existing_queries_ctr} #{str_int(existing_queries_selected_ctr - existing_queries_compared_ctr)} (#{get_percent((existing_queries_selected_ctr - existing_queries_compared_ctr), existing_queries_ctr)})"
+        = calculation_process_for("ctr", existing_queries)
       td
-        = "#{existing_queries_avg_position} #{str_int(existing_queries_selected_avg_position - existing_queries_compared_avg_position)} (#{get_percent((existing_queries_selected_avg_position - existing_queries_compared_avg_position), existing_queries_avg_position)})"
+        = calculation_process_for("avg_position", existing_queries)
 
 hr
 - k_selected = selected.map{|k| k.attributes.merge(type: 'selected')}
