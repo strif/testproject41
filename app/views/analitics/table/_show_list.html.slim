@@ -1,0 +1,16 @@
+table.table.table-bordered
+  thead
+    tr
+      td
+      td Visibility (Current)
+      td Traffic
+      td Average CTR
+      td Average Position
+  tbody
+    - analitics.each do |analitic|
+      tr
+        td = analitic[:query]
+        td = calculation_process_keyword_for("impressions", analitic)
+        td = calculation_process_keyword_for("clicks", analitic)
+        td = calculation_process_keyword_for("ctr", analitic)
+        td = calculation_process_keyword_for("avg_position", analitic)
