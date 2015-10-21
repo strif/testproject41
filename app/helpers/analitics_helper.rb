@@ -71,6 +71,7 @@ module AnaliticsHelper
     total_impression = queries["selected_#{object}".to_sym]
     total_difference = str_int(queries["selected_#{object}".to_sym] - queries["compared_#{object}".to_sym])
     total_difference_on_percent = get_percent(total_difference, total_impression)
+
     text = object.capitalize if ["impressions", "clicks"].include? object
 
     return "#{total_impression} #{text} #{total_difference} (#{total_difference_on_percent})"

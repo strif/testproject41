@@ -14,6 +14,7 @@ module ApplicationHelper
   # return string percent
   #
   def get_percent(add, val)
+    val = 1 if val.eql? 0
     return "#{str_int("#{(add.to_f/val.to_f)*100 || 0}".to_i)}%"
   end
 end
