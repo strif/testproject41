@@ -9,7 +9,7 @@
 - existing_queries = process_new_query_data(all_data, selected, compared, false)
 
 hr
-h1 Overview
+h4 Overview
 table.table.table-bordered
   thead
     tr
@@ -66,7 +66,7 @@ hr
 - keywords_init = (k_selected + k_compared).group_by { |data| data['query'] }
 - keywords = process_keywords(keywords_init)
 
-h1 Top Keywords (top 10 based on clicks)
+h4 Top Keywords (top 10 based on clicks)
 table.table.table-bordered
   thead
     tr
@@ -84,7 +84,7 @@ table.table.table-bordered
         td = "#{keyword[:s_ctr]} #{str_int(keyword[:s_ctr] - keyword[:c_ctr])} (#{get_percent((keyword[:s_ctr] - keyword[:c_ctr]), keyword[:s_ctr])})"
         td = "#{keyword[:s_avg_position]} #{str_int(keyword[:s_avg_position] - keyword[:c_avg_position])} (#{get_percent((keyword[:s_avg_position] - keyword[:c_avg_position]), keyword[:s_avg_position])})"
 
-h1 New Keywords (top 10 based on impressions)
+h4 New Keywords (top 10 based on impressions)
 table.table.table-bordered
   thead
     tr
@@ -102,7 +102,7 @@ table.table.table-bordered
         td = "#{keyword[:s_ctr]} #{str_int(keyword[:s_ctr] - keyword[:c_ctr])} (#{get_percent((keyword[:s_ctr] - keyword[:c_ctr]), keyword[:s_ctr])})"
         td = "#{keyword[:s_avg_position]} #{str_int(keyword[:s_avg_position] - keyword[:c_avg_position])} (#{get_percent((keyword[:s_avg_position] - keyword[:c_avg_position]), keyword[:s_avg_position])})"
 
-h1 Keywords Dissapeared (top 10 based on impressions from past period)
+h4 Keywords Dissapeared (top 10 based on impressions from past period)
 table.table.table-bordered
   thead
     tr
@@ -120,7 +120,7 @@ table.table.table-bordered
         td = "#{keyword[:s_ctr]} #{str_int(keyword[:s_ctr] - keyword[:c_ctr])} (#{get_percent((keyword[:s_ctr] - keyword[:c_ctr]), keyword[:s_ctr])})"
         td = "#{keyword[:s_avg_position]} #{str_int(keyword[:s_avg_position] - keyword[:c_avg_position])} (#{get_percent((keyword[:s_avg_position] - keyword[:c_avg_position]), keyword[:s_avg_position])})"
 
-h1 Improved Rangkings
+h4 Improved Rangkings
 table.table.table-bordered
   thead
     tr
@@ -138,7 +138,7 @@ table.table.table-bordered
         td = "#{keyword[:s_ctr]} #{str_int(keyword[:s_ctr] - keyword[:c_ctr])} (#{get_percent((keyword[:s_ctr] - keyword[:c_ctr]), keyword[:s_ctr])})"
         td = "#{keyword[:s_avg_position]} #{str_int(keyword[:s_avg_position] - keyword[:c_avg_position])} (#{get_percent((keyword[:s_avg_position] - keyword[:c_avg_position]), keyword[:s_avg_position])})"
 
-h1 Lost Rangkings
+h4 Lost Rangkings
 table.table.table-bordered
   thead
     tr
@@ -156,8 +156,62 @@ table.table.table-bordered
         td = "#{keyword[:s_ctr]} #{str_int(keyword[:s_ctr] - keyword[:c_ctr])} (#{get_percent((keyword[:s_ctr] - keyword[:c_ctr]), keyword[:s_ctr])})"
         td = "#{keyword[:s_avg_position]} #{str_int(keyword[:s_avg_position] - keyword[:c_avg_position])} (#{get_percent((keyword[:s_avg_position] - keyword[:c_avg_position]), keyword[:s_avg_position])})"
 
-/
-/ chart section
-/
-/ - keywords_init = (k_selected + k_compared).group_by { |data| data['date'] }
-/ - keywords = process_keywords_date(keywords_init)
+hr
+hr
+
+.row
+  .col-md-6
+
+    h4 Rank Distribution (Graph to compare 2 dates)
+    | *Number of Keywords per ranking Group
+
+    br
+
+    canvas id="myChart" width="400" height="400"
+
+    br
+    | Blue: Position 1-2
+    br
+    | Yellow: Position 2-4
+    br
+    | Green:5-10
+    br
+    | Gray: 10-20
+    br
+    | Light Gray: >20
+
+
+    javascript:
+      var ctx = document.getElementById("myChart").getContext("2d");
+      var data = #{raw create_chart_data(params[:analitic][:end_date], selected.reload.to_a, params[:analitic][:compared_to_end_date], compared.reload.to_a).to_json};
+
+      var myBarChart = new Chart(ctx).StackedBar(data, {
+        barValueSpacing : 70,
+      });
+
+  .col-md-6
+    h4 CTR (only displaying queries with more than 100 impressions )
+
+    table.table.table-bordered
+      thead
+        tr
+          td Position Group
+          td CTR
+          td CTR from previous period
+          td Comparison
+
+      tbody
+        - ctr_group_calculation(selected.to_a, compared.to_a).each do |key, value|
+          tr
+            td = key
+            td.ctr-view-helper.color = value[1] || 0
+            td.ctr-view-helper.color = value[2] || 0
+            td.ctr-view-helper = (value[2] || 0) - (value[1] || 0)
+
+    javascript:
+      $('.ctr-view-helper').each(function(){
+        if ($(this).hasClass('color')) {
+          $(this).css('background-color', "rgba(0,128,0, " + parseInt($(this).text())/100 + ")");
+        }
+        $(this).append('%');
+      })

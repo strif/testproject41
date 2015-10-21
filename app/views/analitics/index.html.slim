@@ -4,11 +4,11 @@ h1 Filter Data
 h1 Date Picker
 = simple_form_for :analitic, url: filter_analitics_path do |f|
   p Selected Date :
-  = f.input :start_date, placeholder: "mm/dd/yyyy"
-  = f.input :end_date, placeholder: "mm/dd/yyyy"
+  = f.input :start_date, input_html: {value: '3/20/2015'}, placeholder: "mm/dd/yyyy"
+  = f.input :end_date, input_html: {value: '4/20/2015'}, placeholder: "mm/dd/yyyy"
   p Compared Date :
-  = f.input :compared_to_start_date, placeholder: "mm/dd/yyyy"
-  = f.input :compared_to_end_date, placeholder: "mm/dd/yyyy"
+  = f.input :compared_to_start_date, input_html: {value: '4/21/2015'}, placeholder: "mm/dd/yyyy"
+  = f.input :compared_to_end_date, input_html: {value: '6/19/2015'}, placeholder: "mm/dd/yyyy"
   = f.button :submit, "Compare"
 
 - if action_name.eql? "filter"
