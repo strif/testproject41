@@ -9,6 +9,9 @@ table.table.table-bordered
     - combined_analitics.take(10).each_with_index do |analitic, index|
       tr
         td = index + 1
-        td = analitic[:selected_ctr] # not consider to percent from whole analitics yet
-        td = analitic[:compared_ctr] # not consider to percent from whole analitics yet
-        td = analitic[:compared_ctr] - analitic[:selected_ctr] # not consider to percent from  yetwhole analitics
+        / not consider to percent from whole analitics yet
+        td = analitic[:selected_ctr]
+        / not consider to percent from whole analitics yet
+        td = analitic[:compared_ctr]
+        / not consider to percent from
+        td = analitic[:compared_ctr] - analitic[:selected_ctr] yetwhole analitics
