@@ -1,5 +1,5 @@
 //
-// new queries & existing queries
+// new queries & existing queries processes
 //
 - new_queries = process_new_query_data(all_data, selected, compared, true)
 - existing_queries = process_new_query_data(all_data, selected, compared, false)
@@ -41,8 +41,12 @@ h3 Lost Rangkings
 - improved_rangkings = queries.select {|q| q[:all_impressions] <= 100 }.sort_by { |r| r[:avg_position] }.reverse.take(10)
 = render partial: "analitics/table/list", locals: {analitics: improved_rangkings}
 
-/ /
-/ / chart section
-/ /
-/ / - keywords_init = (k_selected + k_compared).group_by { |data| data['date'] }
-/ / - keywords = process_keywords_date(keywords_init)
+//
+// still in progress
+//
+hr
+h3 CTR
+- selected_ctr = queries.select {|q| q[:selected_impressions] > 100 }.sort_by { |r| r[:ctr] }
+- compared_ctr = queries.select {|q| q[:compared_impressions] > 100 }.sort_by { |r| r[:ctr] }
+- combined_ctr = selected_ctr + compared_ctr
+= render partial: "analitics/table/list_ctr", locals: {selected_analitics: selected_ctr, compared_analitics: compared_ctr, combined_analitics: combined_ctr}
