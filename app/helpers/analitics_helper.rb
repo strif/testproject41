@@ -77,7 +77,7 @@ module AnaliticsHelper
   end
 
   #
-  # process keywords
+  # process queries
   #
   def process_queries(queries_grouped)
     queries_grouped.map do |query, data|

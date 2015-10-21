@@ -5,7 +5,7 @@
 - existing_queries = process_new_query_data(all_data, selected, compared, false)
 
 hr
-h1 Overview
+h3 Overview
 = render partial: "analitics/table/overview", locals: {new_queries: new_queries, existing_queries: existing_queries}
 
 //
@@ -17,23 +17,27 @@ h1 Overview
 - queries          = process_queries(queries_grouped)
 
 hr
-h1 Top Keywords (top 10 based on clicks)
+h3 Top Keywords (top 10 based on clicks)
 - top_keywords = queries.sort_by { |q| q[:all_clicks] }.reverse.take(10)
 = render partial: "analitics/table/list", locals: {analitics: top_keywords}
 
-h1 New Keywords (top 10 based on impressions)
+hr
+h3 New Keywords (top 10 based on impressions)
 - new_keywords = queries.sort_by { |q| q[:all_impressions] }.reverse.take(10)
 = render partial: "analitics/table/list", locals: {analitics: new_keywords}
 
-h1 Keywords Dissapeared (top 10 based on impressions from past period)
+hr
+h3 Keywords Dissapeared (top 10 based on impressions from past period)
 - keywords_dissapeared = queries.sort_by { |q| q[:s_impressions] }.reverse.take(10)
 = render partial: "analitics/table/list", locals: {analitics: keywords_dissapeared}
 
-h1 Improved Rangkings
+hr
+h3 Improved Rangkings
 - improved_rangkings = queries.select {|q| q[:all_impressions] >= 100 }.sort_by { |r| r[:avg_position] }.reverse.take(10)
 = render partial: "analitics/table/list", locals: {analitics: improved_rangkings}
 
-h1 Lost Rangkings
+hr
+h3 Lost Rangkings
 - improved_rangkings = queries.select {|q| q[:all_impressions] <= 100 }.sort_by { |r| r[:avg_position] }.reverse.take(10)
 = render partial: "analitics/table/list", locals: {analitics: improved_rangkings}
 
