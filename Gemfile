@@ -1,12 +1,12 @@
 source 'https://rubygems.org'
-ruby '2.2.0'
+ruby '2.1.5'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.2.1'
 # Use postgresql as the database for Active Record
 gem 'pg'
 # Use SCSS for stylesheets
-gem 'sass-rails', '~> 5.0'
+#gem 'sass-rails', '~> 5.0'
 # Use Uglifier as compressor for JavaScript assets
 gem 'uglifier', '>= 1.3.0'
 # Use CoffeeScript for .coffee assets and views
@@ -26,12 +26,12 @@ gem 'sdoc', '~> 0.4.0', group: :doc
 # importing of CSV files as Array of Hashes
 gem 'smarter_csv'
 
-gem 'slim-rails'
+#gem 'slim-rails'
 gem 'annotate'
 gem 'simple_form'
-gem 'therubyracer'
-gem 'less-rails'
-gem 'twitter-bootstrap-rails'
+#gem 'therubyracer'
+#gem 'less-rails'
+#gem 'twitter-bootstrap-rails'
 gem 'carrierwave'
 gem 'sidekiq'
 gem 'puma'
